@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>Virtual Keyboard</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+	    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <link rel="stylesheet" type="text/css" href="style.css" />
+        <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@100&display=swap" rel="stylesheet">
+    </head>
+    <body>
+        <audio class="audio" src=""></audio>
+        <textarea class="textarea" cols="30" rows="10" placeholder="Type a text..."></textarea>
+        <div class="keyboard">
+            <button class="key key-letter" data-key-code="192">`</button>
+            <button class="key key-letter" data-key-code="49">1</button>
+            <button class="key key-letter" data-key-code="50">2</button>
+            <button class="key key-letter" data-key-code="51">3</button>
+            <button class="key key-letter" data-key-code="52">4</button>
+            <button class="key key-letter" data-key-code="53">5</button>
+            <button class="key key-letter" data-key-code="54">6</button>
+            <button class="key key-letter" data-key-code="55">7</button>
+            <button class="key key-letter" data-key-code="56">8</button>
+            <button class="key key-letter" data-key-code="57">9</button>
+            <button class="key key-letter" data-key-code="48">0</button>
+            <button class="key key-letter" data-key-code="189">-</button>
+            <button class="key key-letter" data-key-code="187">=</button>
+            <button class="key key-backspace" data-key-code="8"><img src="icons/backspace.png" alt="BackSpace" class="key-img"><span class="key-text">&larr;</span></button>
+
+            <button class="key key-tab" data-key-code="9"><img src="icons/tab.png" alt="Tab" class="key-img"><span class="key-text">Tab</span></button>
+            <button class="key key-letter" data-key-code="81">q</button>
+            <button class="key key-letter" data-key-code="87">w</button>
+            <button class="key key-letter" data-key-code="69">e</button>
+            <button class="key key-letter" data-key-code="82">r</button>
+            <button class="key key-letter" data-key-code="84">t</button>
+            <button class="key key-letter" data-key-code="89">y</button>
+            <button class="key key-letter" data-key-code="85">u</button>
+            <button class="key key-letter" data-key-code="73">i</button>
+            <button class="key key-letter" data-key-code="79">o</button>
+            <button class="key key-letter" data-key-code="80">p</button>
+            <button class="key key-letter" data-key-code="219">[</button>
+            <button class="key key-letter" data-key-code="221">]</button>
+            <button class="key key-letter" data-key-code="220">\</button>
+
+            <button class="key key-capslock" data-key-code="20"><img src="icons/capslock.png" alt="CapsLock" class="key-img"><span class="key-text">CapsLock</span></button>
+            <button class="key key-letter" data-key-code="65">a</button>
+            <button class="key key-letter" data-key-code="83">s</button>
+            <button class="key key-letter" data-key-code="68">d</button>
+            <button class="key key-letter" data-key-code="70">f</button>
+            <button class="key key-letter" data-key-code="71">g</button>
+            <button class="key key-letter" data-key-code="72">h</button>
+            <button class="key key-letter" data-key-code="74">j</button>
+            <button class="key key-letter" data-key-code="75">k</button>
+            <button class="key key-letter" data-key-code="76">l</button>
+            <button class="key key-letter" data-key-code="186">;</button>
+            <button class="key key-letter" data-key-code="222">'</button>
+            <button class="key key-enter" data-key-code="13"><img src="icons/enter.png" alt="Enter" class="key-img"><span class="key-text">Enter</span></button>
+
+            <button class="key key-shift" data-key-code="16"><img src="icons/shift.png" alt="Shift" class="key-img"><span class="key-text">Shift</span></button>
+            <button class="key key-letter" data-key-code="90">z</button>
+            <button class="key key-letter" data-key-code="88">x</button>
+            <button class="key key-letter" data-key-code="67">c</button>
+            <button class="key key-letter" data-key-code="86">v</button>
+            <button class="key key-letter" data-key-code="66">b</button>
+            <button class="key key-letter" data-key-code="78">n</button>
+            <button class="key key-letter" data-key-code="77">m</button>
+            <button class="key key-letter" data-key-code="188">,</button>
+            <button class="key key-letter" data-key-code="190">.</button>
+            <button class="key key-letter" data-key-code="191">?</button>
+            <button class="key key-arrow key-arrow-up" data-key-code="38"><img src="icons/up.png" alt="Up" class="key-arrow-img"></button>
+            <button class="key key-lingua-change" data-key-code="lingua-change">ENG</button>
+
+            <button class="key key-space" data-key-code="32"><img src="icons/space.png" alt="Space" class="key-img"></button>
+
+            <button class="key key-arrow key-arrow-left" data-key-code="37"><img src="icons/left.png" alt="Left" class="key-arrow-img"></button>
+            <button class="key key-arrow key-arrow-down" data-key-code="40"><img src="icons/down.png" alt="Down" class="key-arrow-img"></button>
+            <button class="key key-arrow key-arrow-right" data-key-code="39"><img src="icons/right.png" alt="Right" class="key-arrow-img"></button>
+            <button class="key key-sound" data-key-code="sound"><img src="icons/sound_on.png" alt="Sound on" class="sound-img"></button>
+            
+        </div>
+    </body>
+    <script src="script.js" defer></script>
+</html>

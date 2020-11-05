@@ -1,0 +1,223 @@
+html, body, div, span, applet, object, iframe,
+h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+a, abbr, acronym, address, big, cite, code,
+del, dfn, em, img, ins, kbd, q, s, samp,
+small, strike, strong, sub, sup, tt, var,
+b, u, i, center,
+dl, dt, dd, ol, ul, li,
+fieldset, form, label, legend,
+table, caption, tbody, tfoot, thead, tr, th, td,
+article, aside, canvas, details, embed, 
+figure, figcaption, footer, header, hgroup, 
+menu, nav, output, ruby, section, summary,
+time, mark, audio, video {
+	margin: 0;
+	padding: 0;
+	border: 0;
+	font-size: 100%;
+	font: inherit;
+    vertical-align: baseline;
+    font-family: 'Roboto', Helvetica, sans-serif;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+html {
+    height: 100%;
+}
+
+body {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+}
+
+.textarea {
+    resize: none;
+    width: calc(80% - 10px);
+    margin-bottom: 5px;
+    border: 2px solid #000000;
+    -webkit-box-shadow: 5px 5px 0px -1px #000000;
+    -moz-box-shadow: 5px 5px 0px -1px #000000;
+    box-shadow: 5px 5px 0px -1px #000000;
+    font-family: 'IBM Plex Sans', sans-serif;
+    font-size: 1rem;
+    font-weight: 700;
+    color: black;
+    overflow: hidden;
+}
+
+.textarea::placeholder {
+    font-weight: 400;
+}
+
+.keyboard {
+    display: grid;
+    grid-template-columns: repeat(29, 1fr);
+    grid-template-rows: repeat(5, 48px);
+    width: 80%;
+}
+
+.key-text {
+    font-family: 'IBM Plex Sans', sans-serif;
+    font-weight: 500;
+}
+
+.key {
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    align-content: flex-start;
+    line-height: 1.8rem;
+    margin: 5px;
+    font-size: 1.3rem;
+    font-weight: 500;
+    font-family: 'IBM Plex Sans', sans-serif;
+    border: none;
+    color:#FFFFFF;
+    background-color: rgb(253, 92, 27);
+    -webkit-box-shadow: 5px 5px 0px -1px #000000;
+    -moz-box-shadow: 5px 5px 0px -1px #000000;
+    box-shadow: 5px 5px 0px -1px #000000;
+    transition: 
+        transform 0.2s,
+        -webkit-box-shadow 0.2s,
+        -moz-box-box-shadow 0.2s,
+        box-shadow 0.2s,
+        background-color 0.2s,
+        color 0.2s;
+}
+
+.active {
+    transform: translate(6px, 6px) scale(0.9, 0.9);
+    -webkit-box-shadow: none;
+    -moz-box-shadow: none;
+    box-shadow: none;
+    background-color: rgb(179, 52, 1);
+}
+
+.content-changing {
+    color: rgba(0, 0, 0, 0);
+}
+
+.content-changing > img {
+    opacity: 0;
+    transition: opacity 0.2s;
+}
+
+.key-letter {
+    grid-column: span 2;
+}
+
+.key-backspace {
+    grid-column: span 3;
+}
+
+.key-tab {
+    grid-column: span 3;
+}
+
+.key-capslock {
+    grid-column: span 4;
+}
+
+.key-shift {
+    grid-column: span 5;
+}
+
+.key-enter {
+    grid-column: span 3;
+    grid-row: span 2;
+}
+
+.key-lingua-change {
+    grid-column: span 6;
+}
+
+.key-space {
+    grid-column: span 18;
+}
+
+.key-arrow {
+    grid-column: span 1;
+    flex-direction: row;
+    justify-content: center;
+    align-content: center;
+    align-items: center;
+}
+
+.key-sound {
+    grid-column: span 2;
+}
+
+.key-img {
+    display: none;
+}
+
+.key-img[alt="Tab"] {
+    height: 1.5rem;
+}
+
+.key-img[alt="Enter"] {
+    height: 1.5rem;
+}
+
+.key-arrow-img {
+    height: 1rem;
+}
+
+.key-sound {
+    justify-content: center;
+    align-items: center;
+}
+
+.sound-img {
+    height: 1rem;
+}
+
+@media (max-width: 900px) {
+    .textarea {
+        flex-grow: 1;
+        width: 95%;
+        margin: 1rem;
+    }
+
+    .keyboard {
+        margin: 0 1rem 1rem 1rem;
+        width: 95%;
+        background-color: #000000;
+        -webkit-box-shadow: 5px 5px 0px -1px #000000;
+        -moz-box-shadow: 5px 5px 0px -1px #000000;
+        box-shadow: 5px 5px 0px -1px #000000;
+    }
+
+    .key {
+        transform-origin: right bottom;
+        margin: 1px;
+        -webkit-box-shadow: none;
+        -moz-box-shadow: none;
+        box-shadow: none;
+        flex-direction: row;
+        justify-content: center;
+        align-content: center;
+        align-items: center;
+    }
+
+    .active {
+        transform-origin: right bottom;
+        transform: scale(0.9, 0.9);
+    }
+
+    .key-text {
+        display: none;
+    }
+
+    .key-img {
+        height: 1rem;
+        display: block;
+    }
+}
