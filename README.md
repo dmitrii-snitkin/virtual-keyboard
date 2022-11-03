@@ -1,3 +1,3 @@
 # Virtual Keyboard
 
- https://bilinguator.github.io/Virtual-Keyboard/
+https://dmitrii-snitkin.github.io/virtual-keyboard/
