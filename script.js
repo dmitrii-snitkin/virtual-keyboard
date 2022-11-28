@@ -4,7 +4,6 @@ class Keyboard {
         this.textarea = textarea;
         this.isCapsLock = false;
         this.isShift = false;
-        this.isRightSelection = false;
         this.lingua = 'ENG';
         this.letterShiftedSetEng = {
             '49': ['1', '!'],
@@ -58,6 +57,7 @@ class Keyboard {
             '89': 'y',
             '90': 'z',
         };
+		
         this.letterShiftedSetRus = {
             '49': ['1', '!'],
             '50': ['2', '"'],
@@ -74,6 +74,7 @@ class Keyboard {
             '189': ['-', '_'],
             '187': ['=', '+'],
         };
+		
         this.letterSetRus = {
             '65': 'ф',
             '66': 'и',
@@ -139,37 +140,39 @@ class Keyboard {
     }
 
     linguaChange() {
-        if (this.lingua === 'ENG') {
+        if (this.lingua == 'ENG') {
             this.lingua = 'РУС';
             this.letterShiftedSet = this.letterShiftedSetRus;
-
             this.letterSet = this.letterSetRus;
-        } else if(this.lingua === 'РУС') {
+        } else if (this.lingua == 'РУС') {
             this.lingua = 'ENG';
             this.letterShiftedSet = this.letterShiftedSetEng;
             this.letterSet = this.letterSetEng;
         }
     }
 
-    toLeft() {
+    toLeft () {
         let start = this.textarea.selectionStart;
         let end = this.textarea.selectionEnd;
 
-        if (start === 0) {
+        if (start == 0 && this.textarea.selectionDirection == 'backward') {
             return;
         }
 
         if (this.isShift) {
-            if(start === end) {
-                this.isRightSelection = false;
-            }
-            if(!this.isRightSelection) {
-                this.textarea.setSelectionRange(start - 1, end);
-            } else {
-                this.textarea.setSelectionRange(start, end - 1);
-            }
+            
+			if (start == end) {
+				this.textarea.setSelectionRange(start - 1, end);
+				this.textarea.selectionDirection = 'backward';
+			} else if (this.textarea.selectionDirection == 'backward') {
+				this.textarea.setSelectionRange(start - 1, end);
+				this.textarea.selectionDirection = 'backward';
+			} else {
+				this.textarea.setSelectionRange(start, end - 1);
+			}
+			
         } else {
-            if (start === end) {
+            if (start == end) {
                 this.textarea.setSelectionRange(start - 1, start - 1);
             } else {
                 this.textarea.setSelectionRange(start, start);
@@ -177,27 +180,226 @@ class Keyboard {
         }
     }
 
-    toRight() {
+    toRight () {
         let start = this.textarea.selectionStart;
         let end = this.textarea.selectionEnd;
 
-        if (this.isShift) { 
-            if (start === end) {
-                this.isRightSelection = true;
-            }
-            if (this.isRightSelection) {
-                this.textarea.setSelectionRange(start, end + 1);
-            } else {
-                this.textarea.setSelectionRange(start + 1, end);
-            }
+        if (this.isShift) {
+				if (this.textarea.selectionDirection == 'forward') {
+					this.textarea.setSelectionRange(start, end + 1);
+				} else {
+					this.textarea.setSelectionRange(start + 1, end);
+					this.textarea.selectionDirection = 'backward';
+				}
         } else {
-            if (start === end) {
+            if (start == end) {
                 this.textarea.setSelectionRange(end + 1, end + 1);
             } else {
                 this.textarea.setSelectionRange(end, end);
             }
         }
     }
+	
+	getLineNumber (position) {
+		let textareaArray = this.textarea.value.split('\n');
+		let linesLength = textareaArray[0].length;
+		if (position <= linesLength) {
+			return 0;
+		}
+		for (let i = 1; i < textareaArray.length; i++) {
+			linesLength += textareaArray[i].length + 1;
+			if (position <= linesLength) {
+				return i;
+			}
+		}
+	}
+	
+	getPositionInLine (position) {
+		let textareaArray = this.textarea.value.split('\n');
+		let linesLength = textareaArray[0].length;
+		if (position <= linesLength) {
+			return position;
+		}
+		for (let i = 1; i < textareaArray.length; i++) {
+			linesLength += textareaArray[i].length + 1;
+			if (position <= linesLength) {
+				let positionInLine = textareaArray[i].length - (linesLength - position);
+				return positionInLine;
+			}
+		}
+	}
+	
+	toUp () {
+		console.log('direction before: ' + this.textarea.selectionDirection);
+		let start = this.textarea.selectionStart;
+        let end = this.textarea.selectionEnd;
+		let startNew = start;
+		let endNew = end;
+		let startLine = this.getLineNumber(start);
+		let endLine = this.getLineNumber(end);
+		let currentPosition = this.textarea.selectionDirection == 'forward' ? end : start;
+		let currentLine = this.getLineNumber(currentPosition);
+		let textareaArray = this.textarea.value.split('\n');
+		let positionInLine = this.getPositionInLine(start);
+		let prevLineLength = textareaArray[currentLine - 1] ? textareaArray[currentLine - 1].length : 0;
+		
+		if (prevLineLength < positionInLine) {
+				endNew = end - positionInLine - 1;
+				startNew = start - positionInLine - 1;
+		} else {
+				endNew = end - prevLineLength - 1;
+				startNew = start - prevLineLength - 1;
+		}
+		
+		if (startLine == 0) {
+			if (start == end) {
+				if (this.isShift) {
+					this.textarea.setSelectionRange(0, end);
+					this.textarea.selectionDirection = 'backward';
+				} else {
+					this.textarea.setSelectionRange(0, 0);
+				}
+			} else {
+				if (this.isShift) {
+					if (this.textarea.selectionDirection == 'forward') {
+						if (startLine == endLine) {
+							this.textarea.setSelectionRange(start, start);
+						} else {
+							this.textarea.setSelectionRange(start, endNew);
+							this.textarea.selectionDirection = 'forward';
+						}
+					} else {
+						this.textarea.setSelectionRange(0, end);
+						this.textarea.selectionDirection = 'backward';
+					}
+				} else {
+					this.textarea.setSelectionRange(start, start);
+				}
+			}
+		} else {
+			if (this.isShift) {
+				if (start == end) {
+					console.log('start: ' + start, '; end: ' + end);
+					console.log('startNew: ' + startNew, '; endNew: ' + endNew);
+					this.textarea.setSelectionRange(startNew, end);
+					this.textarea.selectionDirection = 'backward';
+				} else {
+					console.log('start: ' + start, '; end: ' + end);
+					console.log('startNew: ' + startNew, '; endNew: ' + endNew);
+					if (this.textarea.selectionDirection == 'forward') {
+						if (startLine == endLine) {
+							this.textarea.setSelectionRange(endNew, start);
+							this.textarea.selectionDirection = 'backward';
+						} else {
+							if (endNew < start) {
+								this.textarea.setSelectionRange(endNew, start);
+								this.textarea.selectionDirection = 'backward';
+							} else {
+								this.textarea.setSelectionRange(start, endNew);
+								this.textarea.selectionDirection = 'forward';
+							}
+						}
+					} else {
+						this.textarea.setSelectionRange(startNew, end);
+						this.textarea.selectionDirection = 'backward';
+					}	
+				}
+			} else {
+				if (start == end) {
+					this.textarea.setSelectionRange(startNew, startNew);
+				} else {
+					this.textarea.setSelectionRange(start, start);
+				}
+			}
+		}
+		console.log('direction after: ' + this.textarea.selectionDirection);
+	}
+	
+	toDown () {
+		let start = this.textarea.selectionStart;
+        let end = this.textarea.selectionEnd;
+		let startNew = start;
+		let endNew = end;
+		let textareaArray = this.textarea.value.split('\n');
+		let startLine = this.getLineNumber(start);
+		let endLine = this.getLineNumber(end);
+		let currentPosition = this.textarea.selectionDirection == 'forward' ? end : start;
+		let currentLine = this.getLineNumber(currentPosition);
+		let positionInLine = this.getPositionInLine(currentPosition);
+		let nextLineLength = textareaArray[currentLine + 1] ? textareaArray[currentLine + 1].length : 0;
+		
+		if (nextLineLength < positionInLine) {
+			if (this.textarea.selectionDirection == 'forward') {
+				endNew = end + (textareaArray[currentLine].length - positionInLine) + nextLineLength + 1;
+			} else {
+				startNew = start + (textareaArray[currentLine].length - positionInLine) + nextLineLength + 1;
+			}
+		} else {
+			if (this.textarea.selectionDirection == 'forward') {
+				endNew = end + textareaArray[currentLine].length + 1;
+			} else {
+				startNew = start + textareaArray[currentLine].length + 1;
+			}
+		}
+		
+		if (endLine == textareaArray.length - 1) {
+			let veryEnd = this.textarea.value.length;			
+			if (start == end) {
+				if (this.isShift) {
+					this.textarea.selectionDirection = 'forward';
+					this.textarea.setSelectionRange(start, veryEnd);
+				} else {
+					this.textarea.setSelectionRange(veryEnd, veryEnd);
+				}
+			} else {
+				if (this.isShift) {
+					if (this.textarea.selectionDirection == 'forward') {
+						this.textarea.setSelectionRange(start, veryEnd);
+					} else {
+						this.textarea.setSelectionRange(startNew, end);
+						this.textarea.selectionDirection = 'backward';
+					}
+				} else {
+					this.textarea.setSelectionRange(end, end);
+				}		
+			}
+		} else {
+			if (this.isShift) {
+				if (start == end) {
+					this.textarea.setSelectionRange(start, endNew);
+					this.textarea.selectionDirection = 'forward';
+				} else {
+					if (this.textarea.selectionDirection == 'forward') {
+						this.textarea.setSelectionRange(start, endNew);
+					} else {
+						if (startLine == endLine) {
+							this.textarea.setSelectionRange(end, startNew);
+							this.textarea.selectionDirection = 'forward';
+						} else {
+							if (startNew > end) {
+								this.textarea.setSelectionRange(end, startNew);
+								this.textarea.selectionDirection = 'farward';
+							} else {
+								this.textarea.setSelectionRange(startNew, end);
+								this.textarea.selectionDirection = 'backward';
+							}
+							
+							
+							
+							
+						}
+					}	
+				}
+			} else {
+				if (start == end) {
+					this.textarea.setSelectionRange(endNew, endNew);
+				} else {
+					this.textarea.setSelectionRange(end, end);
+				}
+				
+			}
+		}
+	}
 }
 
 const audio = document.querySelector('.audio');
@@ -223,9 +425,8 @@ const keyboard = new Keyboard(textarea);
 textarea.focus();
 
 keys.forEach((item) => {
-
-    //Если не CapsLock, не LinguaChange, не Sound
-    if (item.dataset.keyCode != 20 && item.dataset.keyCode != 'lingua-change' && item.dataset.keyCode != 'sound') { 
+    
+    if (item.dataset.keyCode != 20 && item.dataset.keyCode != 'lingua-change' && item.dataset.keyCode != 173) { 
         item.addEventListener('click', () => {
             textarea.focus();
 
@@ -249,12 +450,6 @@ keys.forEach((item) => {
         item.classList.add('active');
     });
 
-});
-
-keys.forEach((item) => {
-    item.addEventListener('mousedown', () => {
-        item.classList.add('active');
-    });
 });
 
 keyLetters.forEach((item) => item.addEventListener('mousedown', () => {
@@ -290,7 +485,7 @@ keyCapsLock.addEventListener('mousedown', () => {
         audio.play();
     }, 100);
 
-    if(keyboard.isCapsLock) {
+    if (keyboard.isCapsLock) {
         keyCapsLock.classList.remove('active');
         keyLetters.forEach((item) => {
             item.textContent = item.textContent.toLowerCase();
@@ -325,11 +520,12 @@ keyShift.addEventListener('mousedown', () => {
         item.textContent = item.textContent.toUpperCase();
     });
 
-    for(let prop in keyboard.letterShiftedSet) {
+    for (let prop in keyboard.letterShiftedSet) {
         if (keyboard.letterShiftedSet[prop] && prop) {
             document.querySelector(`.key[data-key-code="${prop}"]`).textContent = keyboard.letterShiftedSet[prop][1];
         }
     }
+	
     keyShift.addEventListener('mouseout', () => {
         let event = new Event("mouseup");
         keyShift.dispatchEvent(event);
@@ -338,13 +534,13 @@ keyShift.addEventListener('mousedown', () => {
 
 keyShift.addEventListener('mouseup', () => {
     keyboard.isShift = false;
-    if(!keyboard.isCapsLock) {
+    if (!keyboard.isCapsLock) {
         keyLetters.forEach((item) => {
             item.textContent = item.textContent.toLowerCase();
         });
     }
 
-    for(let prop in keyboard.letterShiftedSet) {
+    for (let prop in keyboard.letterShiftedSet) {
         if (keyboard.letterShiftedSet[prop] && prop) {
             document.querySelector(`.key[data-key-code="${prop}"]`).textContent = keyboard.letterShiftedSet[prop][0];
         }
@@ -377,6 +573,14 @@ keyArrowRight.addEventListener('mousedown', () => {
     keyboard.toRight();
 });
 
+keyArrowUp.addEventListener('mousedown', () => {
+    keyboard.toUp();
+});
+
+keyArrowDown.addEventListener('mousedown', () => {
+    keyboard.toDown();
+});
+
 keyLinguaChange.addEventListener('mousedown', () => {
     setTimeout(() => {
         audio.src = 'audio/letter.mp3';
@@ -392,14 +596,14 @@ keyLinguaChange.addEventListener('mousedown', () => {
         keyboard.linguaChange();
         keyLinguaChange.textContent = keyboard.lingua;
     
-        for(let prop in keyboard.letterShiftedSet) {
+        for (let prop in keyboard.letterShiftedSet) {
 
             if (keyboard.letterShiftedSet[prop] && prop) {
                 document.querySelector(`.key[data-key-code="${prop}"]`).textContent = keyboard.letterShiftedSet[prop][0];
             }
         }
     
-        for(let prop in keyboard.letterSet) {
+        for (let prop in keyboard.letterSet) {
 
             if (keyboard.letterSet[prop] && prop) {
                 document.querySelector(`.key[data-key-code="${prop}"]`).textContent = keyboard.letterSet[prop][0];
@@ -412,12 +616,11 @@ keyLinguaChange.addEventListener('mousedown', () => {
             });
         }
 
-        // Замена плейсхолдера
-            if (keyboard.lingua === 'РУС') {
-                textarea.placeholder = 'Введите текст...';
-            } else if (keyboard.lingua === 'ENG') {
-                textarea.placeholder = 'Type a text...';
-            }
+        if (keyboard.lingua == 'РУС') {
+            textarea.placeholder = 'Введите текст...';
+        } else if (keyboard.lingua == 'ENG') {
+            textarea.placeholder = 'Type a text...';
+        }
            
     }, 200);
 
@@ -428,27 +631,25 @@ keyLinguaChange.addEventListener('mousedown', () => {
 })
 
 keyLinguaChange.addEventListener('mouseup', () => {
-        keys.forEach((item) => {
-            item.classList.remove('content-changing');
-            
-            if (item == keyCapsLock) {
-                
-                if (!keyboard.isCapsLock) {
-                    item.classList.remove('active');
-                }
+	keys.forEach((item) => {
+		item.classList.remove('content-changing');
+		
+		if (item == keyCapsLock) {
+			
+			if (!keyboard.isCapsLock) {
+				item.classList.remove('active');
+			}
 
-            } else if (item == keySound) {
+		} else if (item == keySound) {
 
-                if (audio.muted !== true) {
-                    item.classList.remove('active');
-                }
+			if (audio.muted !== true) {
+				item.classList.remove('active');
+			}
 
-            } else {
-                item.classList.remove('active');
-            }
-
-        });
-
+		} else {
+			item.classList.remove('active');
+		}
+	});
 });
 
 keySound.addEventListener('mousedown', () => {
@@ -471,20 +672,17 @@ keySound.addEventListener('mousedown', () => {
 });
 
 document.addEventListener('keydown', (e) => {
-    console.log(e.keyCode);
     
-    // Enter
     if (e.keyCode == 13 || e.keyCode == 20) {
         document.querySelector(`.key[data-key-code="${e.keyCode}"]`).click();
     }
 
-    // Нажатие Shift
     if (e.keyCode == 16) {
         keyLetters.forEach((item) => {
             item.textContent = item.textContent.toUpperCase();
         });
     
-        for(let prop in keyboard.letterShiftedSet) {
+        for (let prop in keyboard.letterShiftedSet) {
             if (keyboard.letterShiftedSet[prop] && prop) {
                 document.querySelector(`.key[data-key-code="${prop}"]`).textContent = keyboard.letterShiftedSet[prop][1];
             }
@@ -494,9 +692,7 @@ document.addEventListener('keydown', (e) => {
     let event = new Event("mousedown");
     document.querySelector(`.key[data-key-code="${e.keyCode}"]`).dispatchEvent(event);
     
-    // Если не стрелка вверх/вниз
-    if (e.keyCode != 38 && e.keyCode != 40)
-        e.preventDefault();
+    e.preventDefault();
 });
 
 document.addEventListener('keyup', (e) => {
