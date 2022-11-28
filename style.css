@@ -159,15 +159,15 @@ body {
 }
 
 .key-img[alt="Tab"] {
-    height: 1.5rem;
+    height: 1rem;
 }
 
 .key-img[alt="Enter"] {
-    height: 1.5rem;
+    height: 1.2rem;
 }
 
 .key-arrow-img {
-    height: 1rem;
+    height: 0.75rem;
 }
 
 .key-sound {
@@ -203,9 +203,13 @@ body {
         box-shadow: none;
         flex-direction: row;
         justify-content: center;
-        align-content: center;
         align-items: center;
     }
+	
+	.key-tab, .key-capslock, .key-shift, .key-lingua-change {
+		justify-content: left;
+		padding-left: 0.7rem;
+	}
 
     .active {
         transform-origin: right bottom;
@@ -217,7 +221,7 @@ body {
     }
 
     .key-img {
-        height: 1rem;
+        height: 0.75rem;
         display: block;
     }
 }
