@@ -13,7 +13,7 @@ Virtual keyboard is nothing more than just an orange keyboard wherewith you can 
 
 ![Virtual Keyboard Interface](img/img1.png "Virtual Keyboard Interface")
 
-Virtual keyboard is an object-oriented object with all the methods implemented to imitate a real keyboard. Textarea is an integral part of the keyboard. Following methods of the object are implemented:
+Virtual keyboard is an object with all the methods implemented to imitate a real keyboard. Textarea is an integral part of the keyboard. Following methods of the object are implemented:
 
 * `addChar` adds a character from the textarea;
 * `deleteChar`deletes character 
